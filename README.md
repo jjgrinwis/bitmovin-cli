@@ -68,6 +68,8 @@ Both audio and video tracks are encrypted. Two DRM systems are configured:
 | Widevine | PSSH embedded in manifest |
 | PlayReady | License URL via EZDRM (`playready.ezdrm.com`) |
 
+> **Note:** FairPlay has been excluded from this template.
+
 > **Note:** The `key` and `kid` values in the template are example/test values. Replace them with your own keys from your DRM key provider before use in production.
 
 **Output paths (Akamai NetStorage)**
