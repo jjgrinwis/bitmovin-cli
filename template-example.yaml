@@ -1,0 +1,148 @@
+---
+metadata:
+  name: episode-1
+  type: VOD
+configurations:
+  audio:
+    aac:
+      vod_wizard_aac_128000:
+        properties:
+          bitrate: 128000
+          name: Default Audio Config
+          rate: 48000
+  video:
+    h264:
+      vod_wizard_pertitle:
+        properties:
+          name: labla - h264 Per-Title rendition
+          profile: HIGH
+encodings:
+  vod_wizard:
+    properties:
+      name: template_via_cli
+      encoderVersion: BETA
+      cloudRegion: AKAMAI_NL_AMS
+    streams:
+      vod_wizard_aac_128000:
+        properties:
+          name: labla - Audio stream aac@128000
+          codecConfigId: $/configurations/audio/aac/vod_wizard_aac_128000
+          conditions:
+            type: CONDITION
+            attribute: INPUTSTREAM
+            operator: ==
+            value: "TRUE"
+          inputStreams:
+            - inputId: 2e8e3c80-11de-4ced-87d6-ef96a73581ae
+              inputPath: /tears_of_steel_1080p.mov
+      vod_wizard_pertitle:
+        properties:
+          name: labla - Per-Title template stream
+          codecConfigId: $/configurations/video/h264/vod_wizard_pertitle
+          inputStreams:
+            - inputId: 2e8e3c80-11de-4ced-87d6-ef96a73581ae
+              inputPath: /tears_of_steel_1080p.mov
+          mode: PER_TITLE_TEMPLATE
+    muxings:
+      fmp4:
+        vod_wizard_aac_128000:
+          properties:
+            name: labla - fmp4 aac muxing
+            initSegmentName: init.mp4
+            outputs:
+              - outputId: dcf019cd-3b03-4331-97ff-3ca091160df6
+                outputPath: /789214/bitmovin/simon//aac_128000/
+                acl:
+                  - permission: PUBLIC_READ
+            segmentLength: 4
+            segmentNaming: seg_%number%.m4s
+            streams:
+              - streamId: $/encodings/vod_wizard/streams/vod_wizard_aac_128000
+          drm:
+            cenc:
+              cenc_audio:
+                properties:
+                  encryptionMode: CTR
+                  key: <YOUR_EZDRM_KEY>
+                  kid: <YOUR_EZDRM_KID>
+                  outputs:
+                    - outputId: dcf019cd-3b03-4331-97ff-3ca091160df6
+                      outputPath: /789214/bitmovin/simon//drm/audio/
+                      acl:
+                        - permission: PUBLIC_READ
+                  widevine:
+                    pssh: <YOUR_EZDRM_WIDEVINE_PSSH>
+                  playReady:
+                    laUrl: https://playready.ezdrm.com/cency/preauth.aspx?pX=<YOUR_EZDRM_PX_VALUE>
+        vod_wizard_pertitle:
+          properties:
+            name: labla - fmp4 h264 Per-Title muxing
+            initSegmentName: init.mp4
+            outputs:
+              - outputId: dcf019cd-3b03-4331-97ff-3ca091160df6
+                outputPath: /789214/bitmovin/simon//{width}_{bitrate}_{uuid}/
+                acl:
+                  - permission: PUBLIC_READ
+            segmentLength: 4
+            segmentNaming: seg_%number%.m4s
+            streams:
+              - streamId: $/encodings/vod_wizard/streams/vod_wizard_pertitle
+          drm:
+            cenc:
+              cenc_video:
+                properties:
+                  encryptionMode: CTR
+                  key: <YOUR_EZDRM_KEY>
+                  kid: <YOUR_EZDRM_KID>
+                  outputs:
+                    - outputId: dcf019cd-3b03-4331-97ff-3ca091160df6
+                      outputPath: /789214/bitmovin/simon//drm/video/{width}_{bitrate}_{uuid}/
+                      acl:
+                        - permission: PUBLIC_READ
+                  widevine:
+                    pssh: <YOUR_EZDRM_WIDEVINE_PSSH>
+                  playReady:
+                    laUrl: https://playready.ezdrm.com/cency/preauth.aspx?pX=<YOUR_EZDRM_PX_VALUE>
+    start:
+      properties:
+        encodingMode: THREE_PASS
+        perTitle:
+          h264Configuration:
+            autoRepresentations: {}
+        manifestGenerator: V2
+        previewDashManifests:
+          - manifestId: $/manifests/dash/defaultapi/vod_wizard_default_dash
+        vodDashManifests:
+          - manifestId: $/manifests/dash/defaultapi/vod_wizard_default_dash
+        previewHlsManifests:
+          - manifestId: $/manifests/hls/defaultapi/vod_wizard_default_hls
+        vodHlsManifests:
+          - manifestId: $/manifests/hls/defaultapi/vod_wizard_default_hls
+manifests:
+  dash:
+    defaultapi:
+      vod_wizard_default_dash:
+        properties:
+          encodingId: $/encodings/vod_wizard
+          name: labla - Default DASH manifest
+          manifestName: manifest.mpd
+          profile: ON_DEMAND
+          outputs:
+            - outputId: dcf019cd-3b03-4331-97ff-3ca091160df6
+              outputPath: /789214/bitmovin/simon//
+              acl:
+                - permission: PUBLIC_READ
+          version: V2
+  hls:
+    defaultapi:
+      vod_wizard_default_hls:
+        properties:
+          encodingId: $/encodings/vod_wizard
+          name: labla - Default HLS manifest
+          manifestName: manifest.m3u8
+          outputs:
+            - outputId: dcf019cd-3b03-4331-97ff-3ca091160df6
+              outputPath: /789214/bitmovin/simon//
+              acl:
+                - permission: PUBLIC_READ
+
