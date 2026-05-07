@@ -72,7 +72,7 @@ Both audio and video tracks are encrypted. Two DRM systems are configured:
 
 **Output paths (Akamai NetStorage)**
 ```
-/789214/bitmovin/simon/
+/789214/bitmovin/episode-1/
   ├── manifest.mpd
   ├── manifest.m3u8
   ├── aac_128000/
@@ -92,6 +92,8 @@ The following IDs are hardcoded in the templates and must match your Bitmovin ac
 | `inputId` | `2e8e3c80-11de-4ced-87d6-ef96a73581ae` | Akamai NetStorage input |
 | `outputId` | `dcf019cd-3b03-4331-97ff-3ca091160df6` | Akamai NetStorage output |
 | `cloudRegion` | `AKAMAI_NL_AMS` | Bitmovin encoder running on Akamai (Amsterdam) |
+
+> **Note:** The `inputId` and `outputId` values above are examples and will not work as-is. Replace them with the actual IDs from your own Bitmovin account (found in the Bitmovin dashboard under Infrastructure), just as you need to supply your own EZDRM credentials.
 
 To use these templates with different source files or output locations, update `inputPath` and `outputPath` accordingly.
 
